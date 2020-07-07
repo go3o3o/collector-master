@@ -1,0 +1,29 @@
+{
+  "name": "collector-master",
+  "version": "1.0.0",
+  "description": "collector - master",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go3o3o/collector-master.git"
+  },
+  "author": "yonikim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/go3o3o/collector-master/issues"
+  },
+  "homepage": "https://github.com/go3o3o/collector-master#readme",
+  "dependencies": {
+    "async": "^3.2.0",
+    "aws-sdk": "^2.704.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "sleep": "^6.2.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0"
+  }
+}
