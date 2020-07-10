@@ -37,9 +37,8 @@ module.exports = function(params) {
   const Sqs = new aws.SQS();
 
   const consumer = function() {
-    logger.debug(
-      `[SQS/consumer] Consumer 시작 [region: ${region}, queue: ${sqsName}]`
-    );
+    logger.debug(`[SQS/consumer] Consumer 시작`);
+    logger.debug(`### [region: ${region}, queue: ${sqsName}]`);
 
     const payload = {
       MaxNumberOfMessage: 10,
@@ -180,7 +179,7 @@ module.exports = function(params) {
                 },
                 function(err) {
                   if (err) {
-                    logger.error(err.toString());
+                    logger.error(err);
                     slack.sendMessage(
                       {
                         color: "danger",
@@ -225,7 +224,7 @@ module.exports = function(params) {
       },
       function(err) {
         if (err) {
-          logger.error(err.toString());
+          logger.error(err);
           slack.sendMessage(
             {
               color: "danger",

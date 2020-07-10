@@ -46,39 +46,52 @@ if (cluster.isMaster) {
   );
 
   app.get("/produce", function(req, res) {
-    let data = {};
-    data.Result = "OK";
-    if (!workerProducerBusy) {
-      workerProducer.send({
-        mode: PRODUCER
-      });
-      workerProducerBusy = true;
-    } else {
-      data.Message = "Producer is busy.";
+    try {
+      let data = {};
+      data.Result = "OK";
+      if (!workerProducerBusy) {
+        workerProducer.send({
+          mode: PRODUCER
+        });
+        workerProducerBusy = true;
+      } else {
+        data.Message = "producer is busy!";
+      }
+      res.send(data);
+    } catch (err) {
+      res.send({ msg: "produce error", error: err });
     }
-    res.send(data);
   });
 
   app.get("/health", function(req, res) {
-    let data = {};
-    if (workerCnt > 2) {
-      data.Result = "OK";
-      data.Message = "WorkerCnt: " + workerCnt;
-    } else {
-      data.Result = "ERROR";
-      data.Message = "WorkerCnt: " + workerCnt;
+    try {
+      let data = {};
+      if (workerCnt > 2) {
+        data.Result = "OK";
+        data.Message = "WorkerCnt: " + workerCnt;
+      } else {
+        data.Result = "ERROR";
+        data.Message = "WorkerCnt: " + workerCnt;
+      }
+      res.send(data);
+    } catch (err) {
+      res.send({ msg: "health error", error: err });
     }
-    res.send(data);
   });
 
-  const server = app.listen(
-    app.get("port", function() {
-      const host = server.address().address;
-      const port = server.address().port;
+  const server = app.listen(app.get("port"), function() {
+    const host = server.address().address;
+    const port = server.address().port;
 
-      logger.info("[app][master] Server Listening on port %d ", port);
-    })
-  );
+    logger.info(`[app][master] Server Listening on port ${port}`);
+  });
+
+  cluster.on("exit", function(worker, code, signal) {
+    workerCnt--;
+    logger.error(
+      `[app][master] worker ${worker.process.pid} died - code ${code}, signal ${signal}`
+    );
+  });
 } else {
   const producer = require("./sqs/producer");
   const consumer = require("./sqs/consumer");
@@ -88,6 +101,17 @@ if (cluster.isMaster) {
   process.on("message", function(msg) {
     if (msg.mode === PRODUCER) {
       logger.debug("[app][worker] SQS Producer 시작");
+      SQSProducer.produce({}, function(err) {
+        if (err) {
+          logger.error(err);
+        } else {
+          logger.info("[app][worker] SQS 메시지 생성 완료");
+          process.send(PRODUCER_DONE);
+        }
+      });
+    } else if (msg.mode === CONSUMER) {
+      logger.debug("[app][worker] SQS Consumer 시작");
+      SQSConsumerTest.consumer();
     }
   });
 }
