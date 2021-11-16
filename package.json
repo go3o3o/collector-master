@@ -18,7 +18,7 @@
   "homepage": "https://github.com/go3o3o/collector-master#readme",
   "dependencies": {
     "async": "^3.2.0",
-    "aws-sdk": "^2.704.0",
+    "aws-sdk": "^2.814.0",
     "camelize": "^1.0.0",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
