@@ -22,7 +22,7 @@
     "camelize": "^1.0.0",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "fs": "0.0.1-security",
     "mkdirp": "^1.0.4",
     "morgan": "^1.10.0",
